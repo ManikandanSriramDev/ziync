@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/_head.ejs') %>
+  <body>
+<%- include('partials/_header.ejs') %>
+    <main role="main" class="container mt-4">
+      <div class="text-center">
+        <h1>Ziync</h1>
+      </div>
+      <div id="visionBoard">
+        <% if (vision && vision.content) { %>
+          <h2>Vision Board</h2>
+          <p><%= vision.content %></p>
+        <% } %>
+      </div>
+    </main>
+  </body>
+<%- include('partials/_footer.ejs') %>
+  <script src="/js/main.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/chat.js"></script>
+</html>

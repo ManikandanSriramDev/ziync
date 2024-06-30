@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/_head.ejs') %>
+<body>
+<%- include('partials/_header.ejs') %>
+<main role="main" class="container mt-4">
+    <h1>Employee/Members Maintenance</h1>
+    <% if (locals.session && locals.session.isAdmin) { %>
+    <section>
+        <h2>Add New Employee</h2>
+        <form id="addEmployeeForm">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <label for="position">Position:</label>
+                <input type="text" id="position" name="position" required>
+            </div>
+            <button type="submit">Add Employee</button>
+        </form>
+    </section>
+    <section>
+        <h2>Submit Report</h2>
+        <form id="submitReportForm">
+            <div>
+                <label for="employeeId">Employee ID:</label>
+                <input type="text" id="employeeId" name="employeeId" required>
+            </div>
+            <div>
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div>
+                <label for="content">Content:</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+            <button type="submit">Submit Report</button>
+        </form>
+    </section>
+    <% } else { %>
+    <p>You do not have permission to perform this action</p>
+    <% } %>
+</main>
+<script>
+    document.getElementById('addEmployeeForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        try {
+            const response = await fetch('/employees', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(Object.fromEntries(formData)),
+            });
+            if (!response.ok) throw new Error('Failed to add employee');
+            alert('Employee added successfully');
+            console.log('Employee added successfully');
+        } catch (error) {
+            console.error('Error adding employee:', error.message, error.stack);
+            alert('Error adding employee. Please try again.');
+        }
+    });
+
+    document.getElementById('submitReportForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const employeeId = formData.get('employeeId');
+        try {
+            const response = await fetch(`/employees/${employeeId}/reports`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(Object.fromEntries(formData)),
+            });
+            if (!response.ok) throw new Error('Failed to submit report');
+            alert('Report submitted successfully');
+            console.log('Report submitted successfully');
+        } catch (error) {
+            console.error('Error submitting report:', error.message, error.stack);
+            alert('Error submitting report. Please try again.');
+        }
+    });
+</script>
+<%- include('partials/_footer.ejs') %>
+<script src="/js/main.js"></script>
+</html>
